@@ -11,16 +11,16 @@ class YahooStockScheduler {
     @Autowired
     lateinit var yahooStockService : YahooStockService
 
-    @Value("\${process.folder.yahoo.input}")
+    @Value("\${process.output.base}/stocks/yahoo/input")
     lateinit var inputFolder : String
 
-    @Value("\${process.folder.yahoo.output}")
+    @Value("\${process.output.base}/stocks/yahoo/output")
     lateinit var outputFolder : String
 
-    @Value("\${process.folder.yahoo.invalid}")
+    @Value("\${process.output.base}/stocks/yahoo/invalid")
     lateinit var invalidFolder : String
 
-    @Scheduled(fixedRate = 24*60*60*1000)
+    @Scheduled(fixedDelay = 4*60*60*1000)
     fun processData() {
         println("Processing Yahoo Stock Data!")
         yahooStockService.loadData(inputFolder, outputFolder, invalidFolder)

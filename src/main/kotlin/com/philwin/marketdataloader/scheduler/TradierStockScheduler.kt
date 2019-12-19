@@ -11,16 +11,16 @@ class TradierStockScheduler {
     @Autowired
     lateinit var tradierStockService : TradierStockService
 
-    @Value("\${process.folder.tradier.stock.input}")
+    @Value("\${process.output.base}/stocks/tradier/input")
     lateinit var inputFolder : String
 
-    @Value("\${process.folder.tradier.stock.output}")
+    @Value("\${process.output.base}/stocks/tradier/output")
     lateinit var outputFolder : String
 
-    @Value("\${process.folder.tradier.stock.invalid}")
+    @Value("\${process.output.base}/stocks/tradier/invalid")
     lateinit var invalidFolder : String
 
-    @Scheduled(fixedRate = 24*60*60*1000)
+    @Scheduled(fixedDelay = 4*60*60*1000)
     fun processData() {
         println("Processing  Tradier Stock Data!")
         tradierStockService.loadData(inputFolder, outputFolder, invalidFolder)

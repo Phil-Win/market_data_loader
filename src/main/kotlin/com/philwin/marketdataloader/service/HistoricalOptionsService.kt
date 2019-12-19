@@ -46,9 +46,14 @@ class HistoricalOptionsService : IStockService {
     }
 
     fun saveData(file : File) : Boolean {
+        var counter     =   0
         try {
             var optionsList = transformRawCsvToOptionsList(file)
             for (option in optionsList) {
+                counter++
+                if (counter % 100 == 0) {
+                    println("(Only Prints every 100) HistoricalOptionsService Successfully added record #${counter}")
+                }
                 optionsRespository.save(option)
             }
             return (optionsList.size > 0)
@@ -66,10 +71,10 @@ class HistoricalOptionsService : IStockService {
         var lineAsList : List<String>
         var optionOfInterest : Options
         var optionsList   =   ArrayList<Options>()
-        var counter     =   2
+        var counter     =   0
         try {
             lineOfInterest = scanner.nextLine()
-            println("Processing the file : ${file.name}")
+            println("Processing the HistoricalOptionsService file : ${file.name}")
 
             if (!lineOfInterest.equals(headerLine)) {
                 println("The header of ${lineOfInterest} does not match the expected header : ${headerLine}")
@@ -77,13 +82,17 @@ class HistoricalOptionsService : IStockService {
             }
 
             while (scanner.hasNext()) {
-                println("Processing line number : ${counter} : ${lineOfInterest}")
                 counter++
+                if (counter % 100 == 0) {
+                    println("(Only Prints every 100) Processing line number : ${counter} from file ${file.name}")
+                }
                 optionOfInterest = Options()
                 lineOfInterest = scanner.nextLine();
                 lineAsList = lineOfInterest.split(",");
                 if (lineAsList.size == 22) {
-                    println("List contains 22 elements! Adding to database : ${lineOfInterest}")
+                    if (counter % 100 == 0) {
+                        println("List contains 22 elements! Adding to database from file ${file.name}")
+                    }
                     optionOfInterest.ask =   BigDecimal(lineAsList.get(11))
                     optionOfInterest.bid =   BigDecimal(lineAsList.get(10))
                     optionOfInterest.delta   =   BigDecimal(lineAsList.get(15))
@@ -103,11 +112,13 @@ class HistoricalOptionsService : IStockService {
 //                    optionOfInterest.description
                     optionsList.add(optionOfInterest)
                 } else {
-                println("List only contained ${lineAsList.size} elements... skipping")
+                    if (counter % 100 == 0) {
+                        println("List only contained ${lineAsList.size} elements... skipping")
+                    }
                     continue
                 }
             }
-            println("End of file reached! My job here is done!")
+            println("End of file reached! My job here is done! HistoricalOptionsService")
         } finally {
             scanner.close()
         }

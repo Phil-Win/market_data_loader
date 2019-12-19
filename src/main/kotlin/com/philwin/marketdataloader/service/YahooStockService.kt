@@ -47,8 +47,12 @@ class YahooStockService : IStockService {
 
     fun saveData(file : File) : Boolean {
         try {
+            var counter     =   0
             var stockList = transformRawCsvToStockList(file)
             for (stock in stockList) {
+                if (counter % 100 == 0) {
+                    println("(Only Prints every 100) YahooStockService Successfully added record to database #${counter} ")
+                }
                 stockRespository.save(stock)
             }
             return (stockList.size > 0)
@@ -66,24 +70,28 @@ class YahooStockService : IStockService {
         var lineAsList : List<String>
         var stockOfInterest : Stock
         var stockList   =   ArrayList<Stock>()
-//        var counter     =   2
+        var counter     =   0
         try {
             lineOfInterest = scanner.nextLine()
-            println("Processing the file : ${file.name}")
+            println("Processing the file YahooStockService : ${file.name}")
 
             if (!lineOfInterest.equals(headerLine)) {
-//                println("The header of ${lineOfInterest} does not match the expected header : ${headerLine}")
+                println("The header of ${lineOfInterest} does not match the expected header : ${headerLine}")
                 return stockList
             }
 
             while (scanner.hasNext()) {
-//                println("Processing line number : ${counter} : ${lineOfInterest}")
-//                counter++
+                counter++
+                if (counter % 100 == 0) {
+                    println("(Only Prints every 100) Processing line number : ${counter} from file ${file.name}")
+                }
                 stockOfInterest = Stock()
                 lineOfInterest = scanner.nextLine();
                 lineAsList = lineOfInterest.split(",");
                 if (lineAsList.size == 7) {
-//                println("List contains 7 elements! Adding to database : ${lineOfInterest}")
+                    if (counter % 100 == 0) {
+                        println("List contains 7 elements! Adding to database from file ${file.name}")
+                    }
                     stockOfInterest.symbol = file.nameWithoutExtension
                     stockOfInterest.date = dateFormat.parse(lineAsList.get(0))
                     stockOfInterest.open = BigDecimal(lineAsList.get(1))
@@ -93,11 +101,13 @@ class YahooStockService : IStockService {
                     stockOfInterest.volume = lineAsList.get(6).toLong()
                     stockList.add(stockOfInterest)
                 } else {
-//                println("List only contained ${lineAsList.size} elements... skipping")
+                    if (counter % 100 == 0) {
+                        println("List only contained ${lineAsList.size} elements... skipping")
+                    }
                     continue
                 }
             }
-            println("End of file reached! My job here is done!")
+            println("End of file reached! My job here is done! YahooStockService : ${file.name}")
         } finally {
             scanner.close()
         }

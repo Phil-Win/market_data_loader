@@ -50,13 +50,18 @@ class TradierOptionsService : IStockService {
         var lineOfInterest : String
         var gson    =   Gson()
         var tradierRawOptionArray : Array<TradierRawOption>
-        println("Processing Tradier Options File ${file.absolutePath}")
+        var counter     =   0
+        println("Processing TradierOptionsService Options File ${file.absolutePath}")
         try {
             while (scanner.hasNext()) {
                 lineOfInterest  =   scanner.nextLine()
                 tradierRawOptionArray =   gson.fromJson(lineOfInterest, Array<TradierRawOption>::class.java)
                 for (tradierRawOption in tradierRawOptionArray) {
                     for (option in tradierOptionsTransformer(tradierRawOption, file)) {
+                        counter++
+                        if (counter % 100 == 0) {
+                            println("(Only Prints every 100) TradierOptionsService : processing quote #${counter} from file ${file.name}")
+                        }
                         optionsRespository!!.save(option)
                     }
                 }
@@ -64,7 +69,7 @@ class TradierOptionsService : IStockService {
         } finally {
             scanner.close()
         }
-        println("Finished Processing Tradier File ${file.absolutePath}")
+        println("Finished Processing TradierOptionsService File ${file.absolutePath}")
         return true
     }
 
@@ -92,6 +97,7 @@ class TradierOptionsService : IStockService {
             optionToAdd.description     =   option.description
             optionsList.add(optionToAdd)
         }
+        println("TradierOptionsService: Found ${optionsList.size} quotes to process")
         return optionsList
     }
 

@@ -44,19 +44,24 @@ class TradierStockService : IStockService {
         var lineOfInterest : String
         var gson    =   Gson()
         var tradierRawStock : TradierRawStock
-        println("Processing Tradier File ${file.absolutePath}")
+        var counter     =   0
+        println("Processing TradierStockService File: TradierStockService ${file.absolutePath}")
         try {
             while (scanner.hasNext()) {
                 lineOfInterest  =   scanner.nextLine()
                 tradierRawStock =   gson.fromJson(lineOfInterest, TradierRawStock::class.java)
                 for (stock in tradierStockTransformer(tradierRawStock)) {
+                    counter++
+                    if (counter % 100 == 0) {
+                        println("(Only Prints every 100) TradierStockService : processing quote #${counter} from file ${file.name}")
+                    }
                     stockRespository!!.save(stock)
                 }
             }
         } finally {
             scanner.close()
         }
-        println("Finished Processing Tradier File ${file.absolutePath}")
+        println("Finished Processing TradierStockService File ${file.absolutePath}")
         return true
     }
 
@@ -79,6 +84,7 @@ class TradierStockService : IStockService {
             stockOfInterest.volume          =   quote.volume
             stockList.add(stockOfInterest)
         }
+        println("TradierStockService: Found ${stockList.size} quotes to process")
         return stockList
     }
 

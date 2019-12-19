@@ -11,20 +11,21 @@ class TradierOptionsScheduler {
     @Autowired
     lateinit var tradierOptionsService : TradierOptionsService
 
-    @Value("\${process.folder.tradier.option.input}")
+    @Value("\${process.output.base}/options/tradier/input")
     lateinit var inputFolder : String
 
-    @Value("\${process.folder.tradier.option.output}")
+    @Value("\${process.output.base}/options/tradier/output")
     lateinit var outputFolder : String
 
-    @Value("\${process.folder.tradier.option.invalid}")
+    @Value("\${process.output.base}/options/tradier/invalid")
     lateinit var invalidFolder : String
 
-    @Scheduled(fixedRate = 24*60*60*1000)
+    @Scheduled(fixedDelay = 4*60*60*1000)
     fun processData() {
         println("Processing  Tradier Options Data!")
         tradierOptionsService.loadData(inputFolder, outputFolder, invalidFolder)
         println("Finished  Tradier Options Processing Data!")
     }
+
 
 }
