@@ -50,6 +50,7 @@ class YahooStockService : IStockService {
             var counter     =   0
             var stockList = transformRawCsvToStockList(file)
             for (stock in stockList) {
+                counter++
                 if (counter % 100 == 0) {
                     println("(Only Prints every 100) YahooStockService Successfully added record to database #${counter} ")
                 }
