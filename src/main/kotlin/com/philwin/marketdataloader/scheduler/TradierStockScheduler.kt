@@ -7,21 +7,21 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.scheduling.annotation.Scheduled
 
 @Configuration
-class TradierStockScheduler {
+class TradierStockScheduler :IScheduler{
     @Autowired
     lateinit var tradierStockService : TradierStockService
 
     @Value("\${process.output.base}/stocks/tradier/input")
-    lateinit var inputFolder : String
+    override lateinit var inputFolder : String
 
     @Value("\${process.output.base}/stocks/tradier/output")
-    lateinit var outputFolder : String
+    override lateinit var outputFolder : String
 
     @Value("\${process.output.base}/stocks/tradier/invalid")
-    lateinit var invalidFolder : String
+    override lateinit var invalidFolder : String
 
-    @Scheduled(fixedDelay = 4*60*60*1000)
-    fun processData() {
+    @Scheduled(fixedDelay = 4 * 60 * 60 * 1000)
+    override fun scheduleJob() {
         println("Processing  Tradier Stock Data!")
         tradierStockService.loadData(inputFolder, outputFolder, invalidFolder)
         println("Finished  Tradier Stock Processing Data!")

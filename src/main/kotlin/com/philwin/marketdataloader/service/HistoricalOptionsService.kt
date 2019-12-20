@@ -1,7 +1,7 @@
 package com.philwin.marketdataloader.service
 
-import com.philwin.marketdataloader.model.transformed.Options
-import com.philwin.marketdataloader.repository.OptionsRespository
+import com.philwin.marketdata.common.model.Options
+import com.philwin.marketdata.common.repository.OptionsRespository
 import com.philwin.marketdataloader.util.FileUtil
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.io.FileSystemResource
@@ -49,13 +49,8 @@ class HistoricalOptionsService : IStockService {
         var counter     =   0
         try {
             var optionsList = transformRawCsvToOptionsList(file)
-            for (option in optionsList) {
-                counter++
-                if (counter % 100 == 0) {
-                    println("(Only Prints every 100) HistoricalOptionsService Successfully added record #${counter}")
-                }
-                optionsRespository.save(option)
-            }
+            optionsRespository.saveAll(optionsList)
+            println("HistoricalOptionsService : Finished saving all ${optionsList.size} records!")
             return (optionsList.size > 0)
         } catch (e: Exception) {
             return false
@@ -86,31 +81,53 @@ class HistoricalOptionsService : IStockService {
                 if (counter % 100 == 0) {
                     println("(Only Prints every 100) Processing line number : ${counter} from file ${file.name}")
                 }
-                optionOfInterest = Options()
+//                optionOfInterest = Options()
                 lineOfInterest = scanner.nextLine();
                 lineAsList = lineOfInterest.split(",");
                 if (lineAsList.size == 22) {
                     if (counter % 100 == 0) {
                         println("List contains 22 elements! Adding to database from file ${file.name}")
                     }
-                    optionOfInterest.ask =   BigDecimal(lineAsList.get(11))
-                    optionOfInterest.bid =   BigDecimal(lineAsList.get(10))
-                    optionOfInterest.delta   =   BigDecimal(lineAsList.get(15))
-                    optionOfInterest.expiration_date =   dateFormat.parse(lineAsList.get(6))
-                    optionOfInterest.gamma   =   BigDecimal(lineAsList.get(16))
-                    optionOfInterest.implied_volatility  =   BigDecimal(lineAsList.get(14))
-//            optionToAdd.implied_volatility_atm
-                    optionOfInterest.mark_underlying    =   BigDecimal(lineAsList.get(1))
-                    optionOfInterest.open_interest   =   lineAsList.get(13).toLong()
-                    optionOfInterest.quote_date      =   dateFormat.parse(lineAsList.get(7))
-                    optionOfInterest.strike          =   BigDecimal(lineAsList.get(8))
-                    optionOfInterest.symbol          =   lineAsList.get(3)
-                    optionOfInterest.symbol_underlying   =   lineAsList.get(0)
-                    optionOfInterest.theta           =   BigDecimal(lineAsList.get(17))
-                    optionOfInterest.type            =   lineAsList.get(5)
-                    optionOfInterest.volume          =   lineAsList.get(12).toLong()
-//                    optionOfInterest.description
-                    optionsList.add(optionOfInterest)
+//                    optionOfInterest.ask =   BigDecimal(lineAsList.get(11))
+//                    optionOfInterest.bid =   BigDecimal(lineAsList.get(10))
+//                    optionOfInterest.delta   =   BigDecimal(lineAsList.get(15))
+//                    optionOfInterest.expiration_date =   dateFormat.parse(lineAsList.get(6))
+//                    optionOfInterest.gamma   =   BigDecimal(lineAsList.get(16))
+//                    optionOfInterest.implied_volatility  =   BigDecimal(lineAsList.get(14))
+////            optionToAdd.implied_volatility_atm
+//                    optionOfInterest.mark_underlying    =   BigDecimal(lineAsList.get(1))
+//                    optionOfInterest.open_interest   =   lineAsList.get(13).toLong()
+//                    optionOfInterest.quote_date      =   dateFormat.parse(lineAsList.get(7))
+//                    optionOfInterest.strike          =   BigDecimal(lineAsList.get(8))
+//                    optionOfInterest.symbol          =   lineAsList.get(3)
+//                    optionOfInterest.symbol_underlying   =   lineAsList.get(0)
+//                    optionOfInterest.theta           =   BigDecimal(lineAsList.get(17))
+//                    optionOfInterest.type            =   lineAsList.get(5)
+//                    optionOfInterest.volume          =   lineAsList.get(12).toLong()
+////                    optionOfInterest.description
+//                    optionsList.add(optionOfInterest)
+                    optionsList.add(
+                        Options(
+                            lineAsList.get(0),
+                            BigDecimal(lineAsList.get(1)),
+                            lineAsList.get(5),
+                            dateFormat.parse(lineAsList.get(7)),
+                            dateFormat.parse(lineAsList.get(6)),
+                            BigDecimal(lineAsList.get(8)),
+                            BigDecimal(lineAsList.get(10)),
+                            BigDecimal(lineAsList.get(11)),
+                            lineAsList.get(12).toLong(),
+                            lineAsList.get(13).toLong(),
+                            BigDecimal(lineAsList.get(14)),
+                            null,
+                            BigDecimal(lineAsList.get(15)),
+                            BigDecimal(lineAsList.get(16)),
+                            BigDecimal(lineAsList.get(17)),
+                            null,
+                            lineAsList.get(3),
+                            null
+                        )
+                    )
                 } else {
                     if (counter % 100 == 0) {
                         println("List only contained ${lineAsList.size} elements... skipping")

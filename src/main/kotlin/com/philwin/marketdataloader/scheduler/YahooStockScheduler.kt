@@ -7,21 +7,21 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.scheduling.annotation.Scheduled
 
 @Configuration
-class YahooStockScheduler {
+class YahooStockScheduler : IScheduler{
     @Autowired
     lateinit var yahooStockService : YahooStockService
 
     @Value("\${process.output.base}/stocks/yahoo/input")
-    lateinit var inputFolder : String
+    override lateinit var inputFolder : String
 
     @Value("\${process.output.base}/stocks/yahoo/output")
-    lateinit var outputFolder : String
+    override lateinit var outputFolder : String
 
     @Value("\${process.output.base}/stocks/yahoo/invalid")
-    lateinit var invalidFolder : String
+    override lateinit var invalidFolder : String
 
     @Scheduled(fixedDelay = 4*60*60*1000)
-    fun processData() {
+    override fun scheduleJob() {
         println("Processing Yahoo Stock Data!")
         yahooStockService.loadData(inputFolder, outputFolder, invalidFolder)
         println("Finished Yahoo Stock Processing Data!")

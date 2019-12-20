@@ -7,21 +7,22 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.scheduling.annotation.Scheduled
 
 @Configuration
-class TradierOptionsScheduler {
+class TradierOptionsScheduler : IScheduler{
     @Autowired
     lateinit var tradierOptionsService : TradierOptionsService
 
     @Value("\${process.output.base}/options/tradier/input")
-    lateinit var inputFolder : String
+    override lateinit var inputFolder : String
 
     @Value("\${process.output.base}/options/tradier/output")
-    lateinit var outputFolder : String
+    override lateinit var outputFolder : String
 
     @Value("\${process.output.base}/options/tradier/invalid")
-    lateinit var invalidFolder : String
+    override lateinit var invalidFolder : String
+
 
     @Scheduled(fixedDelay = 4*60*60*1000)
-    fun processData() {
+    override fun scheduleJob() {
         println("Processing  Tradier Options Data!")
         tradierOptionsService.loadData(inputFolder, outputFolder, invalidFolder)
         println("Finished  Tradier Options Processing Data!")

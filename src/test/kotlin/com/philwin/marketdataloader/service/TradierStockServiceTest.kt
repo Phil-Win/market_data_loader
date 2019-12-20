@@ -1,8 +1,8 @@
 package com.philwin.marketdataloader.service
 
 import com.google.gson.Gson
+import com.philwin.marketdata.common.model.Stock
 import com.philwin.marketdataloader.model.raw.stocks.tradier.TradierRawStock
-import com.philwin.marketdataloader.model.transformed.Stock
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test

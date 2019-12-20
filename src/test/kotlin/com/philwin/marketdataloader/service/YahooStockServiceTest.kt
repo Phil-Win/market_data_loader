@@ -1,6 +1,6 @@
 package com.philwin.marketdataloader.service
 
-import com.philwin.marketdataloader.model.transformed.Stock
+import com.philwin.marketdata.common.model.Stock
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test

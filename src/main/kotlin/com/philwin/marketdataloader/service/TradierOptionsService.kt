@@ -1,10 +1,8 @@
 package com.philwin.marketdataloader.service
 
 import com.google.gson.Gson
-import com.philwin.marketdataloader.model.raw.options.tradier.Option
+import com.philwin.marketdata.common.repository.OptionsRespository
 import com.philwin.marketdataloader.model.raw.options.tradier.TradierRawOption
-import com.philwin.marketdataloader.model.transformed.Options
-import com.philwin.marketdataloader.repository.OptionsRespository
 import com.philwin.marketdataloader.util.FileUtil
 import org.apache.commons.io.FileUtils
 import org.springframework.beans.factory.annotation.Autowired
@@ -14,6 +12,7 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Pattern
+import com.philwin.marketdata.common.model.Options
 
 @Component
 class TradierOptionsService : IStockService {
@@ -50,20 +49,16 @@ class TradierOptionsService : IStockService {
         var lineOfInterest : String
         var gson    =   Gson()
         var tradierRawOptionArray : Array<TradierRawOption>
-        var counter     =   0
+        var optionsList : List<Options>
         println("Processing TradierOptionsService Options File ${file.absolutePath}")
         try {
             while (scanner.hasNext()) {
                 lineOfInterest  =   scanner.nextLine()
                 tradierRawOptionArray =   gson.fromJson(lineOfInterest, Array<TradierRawOption>::class.java)
                 for (tradierRawOption in tradierRawOptionArray) {
-                    for (option in tradierOptionsTransformer(tradierRawOption, file)) {
-                        counter++
-                        if (counter % 100 == 0) {
-                            println("(Only Prints every 100) TradierOptionsService : processing quote #${counter} from file ${file.name}")
-                        }
-                        optionsRespository!!.save(option)
-                    }
+                    optionsList =   tradierOptionsTransformer(tradierRawOption, file)
+                    optionsRespository.saveAll(optionsList)
+                    println("TradierOptionsService : Successfully loaded all ${optionsList.size} options records!")
                 }
             }
         } finally {
@@ -75,27 +70,48 @@ class TradierOptionsService : IStockService {
 
     fun tradierOptionsTransformer(tradierRawOption: TradierRawOption, file : File): List<Options> {
         var optionsList =   ArrayList<Options>()
-        var optionToAdd : Options
+//        var optionToAdd : Options
+        var quoteDateOfInterest =   getQuoteDateFromFileName(file)
         for (option in tradierRawOption.options.option) {
-            optionToAdd =   Options()
-            optionToAdd.ask =   option.ask
-            optionToAdd.bid =   option.bid
-            optionToAdd.delta   =   option.greeks.delta
-            optionToAdd.expiration_date =   getExpirationFromSymbol(option.description)
-            optionToAdd.gamma   =   option.greeks.gamma
-            optionToAdd.implied_volatility  =   option.greeks.midIv
-//            optionToAdd.implied_volatility_atm
-//            optionToAdd.mark_underlying
-            optionToAdd.open_interest   =   option.openInterest
-            optionToAdd.quote_date      =   getQuoteDateFromFileName(file)
-            optionToAdd.strike          =   option.strike
-            optionToAdd.symbol          =   option.symbol
-            optionToAdd.symbol_underlying   =   option.underlying
-            optionToAdd.theta           =   option.greeks.theta
-            optionToAdd.type            =   getOptionTypeFromDescription(option.description)
-            optionToAdd.volume          =   option.volume
-            optionToAdd.description     =   option.description
-            optionsList.add(optionToAdd)
+//            optionToAdd =   Options()
+//            optionToAdd.ask =   option.ask
+//            optionToAdd.bid =   option.bid
+//            optionToAdd.delta   =   option.greeks.delta
+//            optionToAdd.expiration_date =   getExpirationFromSymbol(option.description)
+//            optionToAdd.gamma   =   option.greeks.gamma
+//            optionToAdd.implied_volatility  =   option.greeks.midIv
+//            optionToAdd.open_interest   =   option.openInterest
+//            optionToAdd.quote_date      =   getQuoteDateFromFileName(file)
+//            optionToAdd.strike          =   option.strike
+//            optionToAdd.symbol          =   option.symbol
+//            optionToAdd.symbol_underlying   =   option.underlying
+//            optionToAdd.theta           =   option.greeks.theta
+//            optionToAdd.type            =   getOptionTypeFromDescription(option.description)
+//            optionToAdd.volume          =   option.volume
+//            optionToAdd.description     =   option.description
+//            optionsList.add(optionToAdd)
+            optionsList.add(
+                Options(
+                   option.underlying,
+                   null,
+                    getOptionTypeFromDescription(option.description),
+                    quoteDateOfInterest,
+                    getExpirationFromSymbol(option.description),
+                    option.strike,
+                    option.bid,
+                    option.ask,
+                    option.volume,
+                    option.openInterest,
+                    option.greeks?.midIv,
+                    null,
+                    option.greeks?.delta,
+                    option.greeks?.gamma,
+                    option.greeks?.theta,
+                    null,
+                    option.symbol,
+                    option.description
+                )
+            )
         }
         println("TradierOptionsService: Found ${optionsList.size} quotes to process")
         return optionsList

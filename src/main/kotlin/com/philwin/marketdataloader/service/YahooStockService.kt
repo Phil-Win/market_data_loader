@@ -1,7 +1,7 @@
 package com.philwin.marketdataloader.service
 
-import com.philwin.marketdataloader.model.transformed.Stock
-import com.philwin.marketdataloader.repository.StockRespository
+import com.philwin.marketdata.common.model.Stock
+import com.philwin.marketdata.common.repository.StockRespository
 import com.philwin.marketdataloader.util.FileUtil
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Configuration
@@ -47,15 +47,9 @@ class YahooStockService : IStockService {
 
     fun saveData(file : File) : Boolean {
         try {
-            var counter     =   0
             var stockList = transformRawCsvToStockList(file)
-            for (stock in stockList) {
-                counter++
-                if (counter % 100 == 0) {
-                    println("(Only Prints every 100) YahooStockService Successfully added record to database #${counter} ")
-                }
-                stockRespository.save(stock)
-            }
+            stockRespository.saveAll(stockList)
+            println("YahooStockService : Finished saving all ${stockList.size} records!")
             return (stockList.size > 0)
         } catch (e: Exception) {
             return false
@@ -69,7 +63,7 @@ class YahooStockService : IStockService {
         val scanner =   Scanner(file)
         var lineOfInterest : String
         var lineAsList : List<String>
-        var stockOfInterest : Stock
+//        var stockOfInterest : Stock
         var stockList   =   ArrayList<Stock>()
         var counter     =   0
         try {
@@ -86,21 +80,36 @@ class YahooStockService : IStockService {
                 if (counter % 100 == 0) {
                     println("(Only Prints every 100) Processing line number : ${counter} from file ${file.name}")
                 }
-                stockOfInterest = Stock()
+//                stockOfInterest = Stock()
                 lineOfInterest = scanner.nextLine();
                 lineAsList = lineOfInterest.split(",");
                 if (lineAsList.size == 7) {
                     if (counter % 100 == 0) {
                         println("List contains 7 elements! Adding to database from file ${file.name}")
                     }
-                    stockOfInterest.symbol = file.nameWithoutExtension
-                    stockOfInterest.date = dateFormat.parse(lineAsList.get(0))
-                    stockOfInterest.open = BigDecimal(lineAsList.get(1))
-                    stockOfInterest.high = BigDecimal(lineAsList.get(2))
-                    stockOfInterest.low = BigDecimal(lineAsList.get(3))
-                    stockOfInterest.close = BigDecimal(lineAsList.get(4))
-                    stockOfInterest.volume = lineAsList.get(6).toLong()
-                    stockList.add(stockOfInterest)
+//                    stockOfInterest.symbol = file.nameWithoutExtension
+//                    stockOfInterest.date = dateFormat.parse(lineAsList.get(0))
+//                    stockOfInterest.open = BigDecimal(lineAsList.get(1))
+//                    stockOfInterest.high = BigDecimal(lineAsList.get(2))
+//                    stockOfInterest.low = BigDecimal(lineAsList.get(3))
+//                    stockOfInterest.close = BigDecimal(lineAsList.get(4))
+//                    stockOfInterest.volume = lineAsList.get(6).toLong()
+                    stockList.add(
+                        Stock(
+                            file.nameWithoutExtension,
+                                dateFormat.parse(lineAsList.get(0)),
+                                BigDecimal(lineAsList.get(1)),
+                                BigDecimal(lineAsList.get(4)),
+                                BigDecimal(lineAsList.get(2)),
+                                BigDecimal(lineAsList.get(3)),
+                                null,
+                                null,
+                                null,
+                                lineAsList.get(6).toLong(),
+                                null,
+                                null
+                        )
+                    )
                 } else {
                     if (counter % 100 == 0) {
                         println("List only contained ${lineAsList.size} elements... skipping")

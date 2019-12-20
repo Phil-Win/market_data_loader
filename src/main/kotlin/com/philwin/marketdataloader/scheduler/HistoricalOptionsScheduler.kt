@@ -7,24 +7,25 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.scheduling.annotation.Scheduled
 
 @Configuration
-class HistoricalOptionsScheduler {
+class HistoricalOptionsScheduler : IScheduler{
     @Autowired
     lateinit var historicalOptionsService : HistoricalOptionsService
 
     @Value("\${process.output.base}/options/historicaloptions/input")
-    lateinit var inputFolder : String
+    override lateinit var inputFolder : String
 
     @Value("\${process.output.base}/options/historicaloptions/output")
-    lateinit var outputFolder : String
+    override lateinit var outputFolder : String
 
     @Value("\${process.output.base}/options/historicaloptions/invalid")
-    lateinit var invalidFolder : String
+    override lateinit var invalidFolder : String
 
     @Scheduled(fixedDelay = 4*60*60*1000)
-    fun processData() {
+    override fun scheduleJob() {
         println("Processing  Historical Options Data!")
         historicalOptionsService.loadData(inputFolder, outputFolder, invalidFolder)
         println("Finished  Historical Options Processing Data!")
     }
+
 
 }

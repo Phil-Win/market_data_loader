@@ -8,8 +8,8 @@ plugins {
 	kotlin("plugin.jpa") version "1.3.61"
 }
 
-group = "com.philwin"
-version = "0.0.1-SNAPSHOT"
+group = "com.philwin.marketdata"
+version = "1.0.4"
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 
 repositories {
@@ -21,8 +21,9 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 	implementation( "com.google.code.gson:gson:2.8.2")
-	implementation ("commons-io:commons-io:2.6")
-
+	implementation("commons-io:commons-io:2.6")
+//	implementation(project(":MarketDataCommon"))
+    implementation("com.philwin.marketdata:MarketDataCommon:1.0.0")
 	runtimeOnly("com.h2database:h2")
 	runtimeOnly("mysql:mysql-connector-java")
 	testImplementation("org.springframework.boot:spring-boot-starter-test") {

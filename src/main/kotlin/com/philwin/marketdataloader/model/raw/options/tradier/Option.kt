@@ -21,7 +21,7 @@ data class Option(
         var exch: String,
         var expirationDate: Any?,
         var expirationType: Any?,
-        var greeks: Greeks,
+        var greeks: Greeks?,
         var high: BigDecimal?,
         var last: BigDecimal?,
         var lastVolume: Long?,
