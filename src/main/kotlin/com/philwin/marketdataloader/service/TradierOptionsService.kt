@@ -23,17 +23,17 @@ class TradierOptionsService : IStockService {
     val dateFormatOptionSymbol  =   SimpleDateFormat("yyMMdd")
 
     override fun loadData(inputFolder: String, outputFolder: String, invalidFolder: String): Boolean {
-        val inputFolder      =   FileSystemResource(inputFolder).file
-        val outputFolder    =   FileSystemResource(outputFolder).file
-        val invalidFolder   =   FileSystemResource(invalidFolder).file
+        val input      =   FileSystemResource(inputFolder).file
+        val output    =   FileSystemResource(outputFolder).file
+        val invalid   =   FileSystemResource(invalidFolder).file
 
-        if (inputFolder.isFile) {
-            loadAndMoveData(inputFolder, outputFolder, invalidFolder)
+        if (input.isFile) {
+            loadAndMoveData(input, output, invalid)
         } else {
-            var fileList    =   FileUtils.listFiles(inputFolder, null, true)
+            var fileList    =   FileUtils.listFiles(input, null, true)
             for (file in fileList) {
                 if (file.name.contains("_options_processed_on_")) {
-                    loadAndMoveData(file, outputFolder, invalidFolder)
+                    loadAndMoveData(file, output, invalid)
                 }
             }
         }

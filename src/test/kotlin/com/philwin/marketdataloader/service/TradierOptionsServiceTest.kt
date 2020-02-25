@@ -1,8 +1,6 @@
 package com.philwin.marketdataloader.service
 
 import com.google.gson.Gson
-import com.philwin.marketdataloader.model.raw.options.tradier.Option
-import com.philwin.marketdataloader.model.raw.stocks.tradier.TradierRawStock
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.mockito.Mock
@@ -15,7 +13,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
-@SpringBootTest
+//@SpringBootTest
 class TradierOptionsServiceTest {
     @Autowired
     lateinit var tradierOptionsService: TradierOptionsService

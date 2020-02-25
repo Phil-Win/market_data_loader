@@ -11,13 +11,13 @@ class TradierOptionsScheduler : IScheduler{
     @Autowired
     lateinit var tradierOptionsService : TradierOptionsService
 
-    @Value("\${process.output.base}/options/tradier/input")
+    @Value("\${process.output.base}/MarketData/Input/TradierOptions")
     override lateinit var inputFolder : String
 
-    @Value("\${process.output.base}/options/tradier/output")
+    @Value("\${process.output.base}/MarketData/Archive/TradierOptions")
     override lateinit var outputFolder : String
 
-    @Value("\${process.output.base}/options/tradier/invalid")
+    @Value("\${process.output.base}/MarketData/Invalid/TradierOptions")
     override lateinit var invalidFolder : String
 
 

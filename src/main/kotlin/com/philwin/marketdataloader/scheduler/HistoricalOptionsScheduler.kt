@@ -11,13 +11,13 @@ class HistoricalOptionsScheduler : IScheduler{
     @Autowired
     lateinit var historicalOptionsService : HistoricalOptionsService
 
-    @Value("\${process.output.base}/options/historicaloptions/input")
+    @Value("\${process.output.base}/MarketData/Input/HistoricalOptions")
     override lateinit var inputFolder : String
 
-    @Value("\${process.output.base}/options/historicaloptions/output")
+    @Value("\${process.output.base}/MarketData/Archive/HistoricalOptions")
     override lateinit var outputFolder : String
 
-    @Value("\${process.output.base}/options/historicaloptions/invalid")
+    @Value("\${process.output.base}/MarketData/Invalid/HistoricalOptions")
     override lateinit var invalidFolder : String
 
     @Scheduled(fixedDelay = 4*60*60*1000)

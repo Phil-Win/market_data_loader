@@ -20,20 +20,20 @@ class HistoricalOptionsService : IStockService {
     val headerLine      =   "underlying,underlying_last, exchange,optionroot,optionext,type,expiration,quotedate,strike,last,bid,ask,volume,openinterest,impliedvol,delta,gamma,theta,vega,optionalias,IVBid,IVAsk"
 
     override fun loadData(inputFolder: String, outputFolder: String, invalidFolder : String): Boolean{
-        val inputFolder      =   FileSystemResource(inputFolder).file;
-        val outputFolder    =   FileSystemResource(outputFolder).file;
-        val invalidFolder   =   FileSystemResource(invalidFolder).file
+        val input      =   FileSystemResource(inputFolder).file;
+        val output    =   FileSystemResource(outputFolder).file;
+        val invalid   =   FileSystemResource(invalidFolder).file
 
-        if (inputFolder.isFile) {
-            loadAndMoveData(inputFolder, outputFolder, invalidFolder)
+        if (input.isFile) {
+            loadAndMoveData(input, output, invalid)
         } else {
-            val fileList    =   inputFolder.listFiles()
+            val fileList    =   input.listFiles()
             if (fileList == null || fileList.size == 0) {
-                println("No files in folder ${inputFolder.absolutePath}, job is complete")
+                println("No files in folder ${input.absolutePath}, job is complete")
                 return true
             } else {
                 for (fileOfInterest in fileList) {
-                    loadAndMoveData(fileOfInterest, outputFolder, invalidFolder)
+                    loadAndMoveData(fileOfInterest, output, invalid)
                 }
             }
         }
